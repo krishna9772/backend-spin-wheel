@@ -6,7 +6,7 @@
     <title>Lucky Splash Wheel</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="{{ asset('css/spin-wheel.css') }}" rel="stylesheet">
-    <link rel="shortcut icon" href="{{asset("images/favicon.ico")}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{asset("images/a-favicon.ico")}}" type="image/x-icon">
 
     <style>
     

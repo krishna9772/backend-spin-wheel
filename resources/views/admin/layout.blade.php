@@ -15,7 +15,7 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 
-    <link rel="shortcut icon" href="{{asset("images/favicon.ico")}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{asset("images/a-favicon.ico")}}" type="image/x-icon">
 
     <style>
         body { font-family: Arial; background:#f5f6fa; padding:20px; }
