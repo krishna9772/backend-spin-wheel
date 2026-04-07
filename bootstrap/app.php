@@ -13,10 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // This tells Laravel to allow API requests from other origins
-        $middleware->statefulApi();
-        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
+        // $middleware->statefulApi(); 
+        $middleware->redirectGuestsTo(function ($request) {
+            return '/admin/login';
+        });
         $middleware->validateCsrfTokens(except: [
-            'api/*' 
+            '*' 
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

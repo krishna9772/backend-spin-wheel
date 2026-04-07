@@ -9,7 +9,7 @@ class Reward extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['label', 'chance', 'stock', 'is_active'];
+    protected $fillable = ['label', 'chance', 'stock','times_won', 'is_active'];
 
     public function spins()
     {

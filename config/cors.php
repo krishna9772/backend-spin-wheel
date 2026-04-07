@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*'],
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://127.0.0.1:8787'], // your frontend
+    'allowed_origins' => ['*'], // your frontend
 
     'allowed_origins_patterns' => [],
 

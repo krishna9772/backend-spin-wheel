@@ -1,40 +1,17 @@
-@extends('admin.layout')
-
-@section('content')
-<h2>Spin Results</h2>
-
-<table class="table table-bordered" id="spinsTable">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Reward</th>
-            <th>Result</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Spins injected here -->
-    </tbody>
-</table>
-
-<script>
-const spinsApi = '/api/admin/spins';
-const token = 'YOUR_AUTH_TOKEN'; // Replace with a valid token
-
-async function fetchSpins() {
-    const res = await axios.get(spinsApi, { headers: { Authorization: 'Bearer ' + token } });
-    const tbody = document.querySelector('#spinsTable tbody');
-    tbody.innerHTML = '';
-    res.data.data.forEach(s => {
-        tbody.innerHTML += '<tr>' +
-            '<td>' + s.user?.name + '</td>' +
-            '<td>' + s.reward?.label + '</td>' +
-            '<td>' + (s.result ? 'Won' : 'Lost') + '</td>' +
-            '<td>' + new Date(s.created_at).toLocaleString() + '</td>' +
-        '</tr>';
-    });
-}
-
-fetchSpins();
-</script>
-@endsection
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Splash Wheel</title>
+    <link rel="stylesheet" href="{{ asset('css/spin.css') }}">
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const LOGO_URL = "{{ asset('images/logo.jpg') }}";
+        const BG_URL = "{{ asset('images/background.jpg') }}";
+    </script>
+    <script src="{{ asset('js/spin.js') }}"></script>
+</body>
+</html>

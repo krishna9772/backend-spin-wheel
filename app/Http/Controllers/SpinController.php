@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Reward;
@@ -10,8 +10,22 @@ use Illuminate\Support\Facades\DB;
 
 class SpinController extends Controller
 {
+    public function getAdminSpins()
+    {
+        // with('reward') attaches the reward data to every spin
+        // latest() sorts them by newest first
+        // take(100) prevents the page from crashing if you have thousands of spins
+        $spins = Spin::with('reward')
+                     ->latest()
+                     ->take(100) 
+                     ->get();
+
+        return response()->json($spins);
+    }
+
     public function spin(Request $request)
     {
+
         DB::beginTransaction();
 
         try {
@@ -41,6 +55,7 @@ class SpinController extends Controller
             $selected ??= $rewards->first();
 
             $selected->decrement('stock');
+            $selected->increment('times_won');
 
             $spin = Spin::create([
                 'user_id' => $request->user()?->id,
