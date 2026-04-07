@@ -25,7 +25,7 @@
 					label: r.label,
 					cat: r.cat || "Prize",
 					// Fix: Alternating colors using math instead of a separate function
-					color: r.color || (index % 2 === 0 ? '#d4af37' : '#e61919'), 
+					color: r.color || (index % 2 === 0 ? '#d4af37' : '#B30C12'), 
 					chance: parseFloat(r.chance),
 					stock: parseInt(r.stock),
 					// Fix: Pull the stats directly from the database!
