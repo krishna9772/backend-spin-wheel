@@ -62,11 +62,17 @@
         }
 
         /* Mobile tweak to ensure it fits on small screens */
+        /* Mobile tweak to ensure it fits on small screens */
         @media (max-width: 600px) {
+            /* Hide the inquiry button on mobile */
+            .inquiry-btn {
+                display: none;
+            }
+
             #statsPanel {
                 top: 70px;
                 right: 10px;
-                left: 10px; /* Stretches across the screen on mobile */
+                left: 10px; 
                 max-width: none;
             }
         }

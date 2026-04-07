@@ -206,23 +206,24 @@
 	}
 
 	function createBulbs() {
-		const bulbSize = 12;
-		const center = canvas.width / 2;
+		const bulbRing = document.querySelector('.bulb-ring');
+		const totalBulbs = 24; 
 
-		const radius = center + 8; // 🔥 pushes bulbs slightly OUTSIDE border
-
-		for (let i = 0; i < bulbCount; i++) {
-			const bulb = document.createElement("div");
-			bulb.classList.add("bulb");
-
-			const angle = (i / bulbCount) * 2 * Math.PI;
-
-			const x = center + radius * Math.cos(angle) - bulbSize / 2;
-			const y = center + radius * Math.sin(angle) - bulbSize / 2;
-
-			bulb.style.left = x + "px";
-			bulb.style.top = y + "px";
-
+		for (let i = 0; i < totalBulbs; i++) {
+			let bulb = document.createElement('div');
+			bulb.classList.add('bulb');
+			
+			// Calculate angle
+			let angle = (i * (360 / totalBulbs)) * (Math.PI / 180);
+			
+			// Position using percentages so it scales perfectly on mobile
+			// 50% is the center. We use 50% radius to push them to the edge.
+			let x = 50 + (50 * Math.cos(angle)); 
+			let y = 50 + (50 * Math.sin(angle));
+			
+			bulb.style.left = `calc(${x}% - 6px)`; // 6px is half the bulb width to center the bulb itself
+			bulb.style.top = `calc(${y}% - 6px)`;
+			
 			bulbRing.appendChild(bulb);
 		}
 	}
