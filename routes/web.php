@@ -35,6 +35,6 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::get('/spin', function () {
+Route::get('/', function () {
     return view('spin-wheel');
 })->name('spin.view');
