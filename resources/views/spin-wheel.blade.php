@@ -11,11 +11,22 @@
     <style>
     
         body {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; 
-            background: url("{{asset('images/background.jpg')}}") no-repeat center center fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 100vh; /* better than height */
+            margin: 0;
+
+            background-image: url("{{asset('images/background.jpg')}}");
+            background-position: center center;
+            background-repeat: no-repeat;
             background-size: cover;
-            font-family: 'Pyidaungsu', sans-serif; color: white; overflow: hidden;
+
+            font-family: 'Pyidaungsu', sans-serif;
+            color: white;
+            overflow-x: hidden;
             position: relative;
         }
 
@@ -76,6 +87,13 @@
                 max-width: none;
             }
         }
+
+        @media (max-width: 768px) {
+            body {
+                background-position: center top;
+                background-size: cover;
+            }
+        }
     </style>
 </head>
 <body>
@@ -103,6 +121,16 @@
                <span class="prize-text" id="prizeDisplay"></span>
             </p>
             <button class="close-btn" id="closeModalBtn"> Thank You </button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="badLuckModalOverlay">
+        <div class="modal" id="badLuckModalBox">
+            <h2 style="color: #888;">😔 ဝမ်းနည်းပါတယ် 😔</h2>
+            <p style="color: #555;">နောက်တစ်ကြိမ် ပြန်ကြိုးစားပါအုံးနော်!<br>
+               <span class="prize-text" style="color: #888; font-size: 16px; margin-top:10px;">( ကျေးဇူးတင်ပါသည် )</span>
+            </p>
+            <button class="close-btn" id="closeBadLuckModalBtn" style="background: #e0e0e0; color: #333; box-shadow: 0 4px 0 #999;"> Close </button>
         </div>
     </div>
 

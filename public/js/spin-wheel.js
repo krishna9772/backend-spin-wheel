@@ -6,15 +6,9 @@
         const modalBox = document.getElementById("modalBox");
         const prizeDisplay = document.getElementById("prizeDisplay");
 		const closeModalBtn = document.getElementById("closeModalBtn");
-
-		// const sectors = [
-        //     { label: "$50 Cashback", cat: "Grand Prize", color: "#d4af37", chance: 2 , stock: 100},
-        //     { label: "$20 Cashback", cat: "Special Prize", color: "#e61919", chance: 3 , stock: 100 },
-        //     { label: "$10 Cashback", cat: "Daily Wins", color: "#ffcc00", chance:5, stock: 100 },
-        //     { label: "Free Earphones", cat: "Inventory Clear", color: "#e61919",chance:25, stock: 100 },
-        //     { label: "Free Case/Cable", cat: "Consolation", color: "#ffcc00",chance:30, stock: 100 },
-        //     { label: "Powerbank", cat: "Inventory Clear", color: "#ffcc00",chance:35, stock: 100 },
-        // ];
+		const badLuckModalOverlay = document.getElementById("badLuckModalOverlay");
+		const badLuckModalBox = document.getElementById("badLuckModalBox");
+		const closeBadLuckModalBtn = document.getElementById("closeBadLuckModalBtn");
 
 		let sectors = []; // Empty initially
 
@@ -397,10 +391,19 @@
 				setTimeout(async() => {
 					
 			
-					showModal(win.label);
-					shootConfetti();
-					await fetchRewards();
+					const isBadLuck = win.label.toLowerCase().includes('bad luck') || 
+                                      win.label.toLowerCase().includes('try again') ||
+                                      win.label === 'Thank You'; 
 
+                    if (isBadLuck) {
+                        showBadLuckModal();
+                        // Notice: NO confetti here!
+                    } else {
+                        showModal(win.label);
+                        shootConfetti();
+                    }
+                    
+                    await fetchRewards();
 
 					// showModal(data.reward); // Display reward
 					// confetti({ particleCount: 200, spread: 360, origin: { y: 0.5 } }); // Smooth confetti
@@ -433,6 +436,34 @@
                 spinBtn.disabled = false;
                 startIdleAnimation(); // Modal ပိတ်ရင် Idle ပြန်စမယ်
             }, 300);
+        }
+
+		function showBadLuckModal() {
+            badLuckModalOverlay.style.display = 'flex';
+            setTimeout(() => { badLuckModalBox.classList.add('active'); }, 10);
+        }
+
+        // Updated to close BOTH types of modals safely
+        function closeModal() {
+            if (modalBox) modalBox.classList.remove('active');
+            if (badLuckModalBox) badLuckModalBox.classList.remove('active');
+            
+            setTimeout(() => {
+                if (modalOverlay) modalOverlay.style.display = 'none';
+                if (badLuckModalOverlay) badLuckModalOverlay.style.display = 'none';
+                
+                isSpinning = false;
+                spinBtn.disabled = false;
+                startIdleAnimation(); 
+            }, 300);
+        }
+
+        // Ensure both buttons trigger the close function
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener("click", closeModal);
+        }
+        if (closeBadLuckModalBtn) {
+            closeBadLuckModalBtn.addEventListener("click", closeModal);
         }
 
 		function pickWinnerIndex() {

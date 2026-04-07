@@ -43,8 +43,15 @@ axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';    
 
 // --- REWARDS LOGIC ---
+let rewardsTable;
+
 async function fetchRewards() {
     const res = await axios.get(apiUrl);
+
+    if (rewardsTable) {
+        rewardsTable.destroy();
+    }
+
     const tbody = document.querySelector('#rewardsTable tbody');
     tbody.innerHTML = '';
 
@@ -61,6 +68,12 @@ async function fetchRewards() {
                 <button onclick="refillStock(${r.id})">Refill</button>
             </td>
         </tr>`;
+    });
+
+    rewardsTable = $('#rewardsTable').DataTable({
+        pageLength: 5,
+        responsive: true,
+        order: [[1, 'desc']],
     });
 }
 
@@ -105,17 +118,21 @@ async function deleteReward(id) {
     fetchRewards();
 }
 
-// --- NEW: SPINS LOGIC ---
+let spinsTable;
+
 async function fetchSpins() {
     try {
         const res = await axios.get(spinsApiUrl);
+
+        if (spinsTable) {
+            spinsTable.destroy();
+        }
+
         const tbody = document.querySelector('#spinsTable tbody');
         tbody.innerHTML = '';
 
         res.data.forEach(s => {
-            // We use s.reward.label if you load the relationship, otherwise fallback to ID
             const rewardName = s.reward ? s.reward.label : `Reward ID: ${s.reward_id}`;
-            const shortHash = s.spin_hash ? s.spin_hash.substring(0, 15) + '...' : 'N/A';
             const date = new Date(s.created_at).toLocaleString();
 
             tbody.innerHTML += `
@@ -125,6 +142,12 @@ async function fetchSpins() {
                 <td>${date}</td>
             </tr>`;
         });
+
+        spinsTable = $('#spinsTable').DataTable({
+            pageLength: 10,
+            order: [[2, 'desc']],
+        });
+
     } catch (error) {
         console.error("Failed to load spins:", error);
     }

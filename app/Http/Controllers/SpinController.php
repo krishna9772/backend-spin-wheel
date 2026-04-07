@@ -25,36 +25,49 @@ class SpinController extends Controller
 
     public function spin(Request $request)
     {
-
         DB::beginTransaction();
 
         try {
-            $rewards = Reward::where('is_active', 1)
-                ->where('stock', '>', 0)
-                ->lockForUpdate()
-                ->get();
+            // 1. Get ALL active rewards, regardless of stock
+            $allRewards = Reward::where('is_active', 1)->lockForUpdate()->get();
 
-            if ($rewards->isEmpty()) {
-                return response()->json(['error' => 'No rewards available'], 400);
+            if ($allRewards->isEmpty()) {
+                return response()->json(['error' => 'No rewards configured'], 400);
             }
 
-            $totalChance = $rewards->sum('chance');
+            // 2. Roll the dice against the absolute totals
+            $totalChance = $allRewards->sum('chance');
             $rand = mt_rand() / mt_getrandmax() * $totalChance;
 
             $cumulative = 0;
             $selected = null;
 
-            foreach ($rewards as $reward) {
+            foreach ($allRewards as $reward) {
                 $cumulative += $reward->chance;
                 if ($rand <= $cumulative) {
                     $selected = $reward;
                     break;
                 }
             }
+            $selected ??= $allRewards->first();
 
-            $selected ??= $rewards->first();
+            // 3. THE INDUSTRY STANDARD FALLBACK LOGIC
+            if ($selected->stock <= 0) {
+                // The item they landed on is empty. 
+                // Give them the consolation prize instead.
+                // (Assuming you have a reward named "Consolation Prize" or similar)
+                $selected = Reward::where('label', 'Bad Luck')->first(); 
+                
+                if (!$selected) {
+                    // Failsafe if you forgot to create a consolation prize
+                    throw new \Exception("System out of fallback rewards.");
+                }
+            } else {
+                // Only deduct stock if it wasn't the fallback
+                $selected->decrement('stock');
+            }
 
-            $selected->decrement('stock');
+            // 4. Log the win
             $selected->increment('times_won');
 
             $spin = Spin::create([
