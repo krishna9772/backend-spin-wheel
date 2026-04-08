@@ -21,7 +21,7 @@
             position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
             width: 0; height: 0; border-left: clamp(15px, 4vw, 20px) solid transparent; 
             border-right: clamp(15px, 4vw, 20px) solid transparent;
-            border-top: clamp(30px, 8vw, 40px) solid #F4F4B8; z-index: 100;
+            border-top: clamp(30px, 8vw, 40px) solid #ffcc00; z-index: 100;
         }
         
         .outer-glow {
@@ -58,13 +58,13 @@
 
         .spin-btn {
             margin-top: 85px; padding: 15px 50px; font-size: clamp(18px, 4vw, 22px); font-weight: bold;
-            color: #8B4513; background: linear-gradient(#D4AF37, #8B4513);
+            color: #440000; background: linear-gradient(#ffea00, #ff9500);
             border: none; border-radius: 50px; cursor: pointer; 
             box-shadow: 0 6px 0 #b36b00; z-index: 1; transition: 0.2s;
 			width: clamp(200px, 60vw, 300px);
         }
-        .spin-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #D4AF37; }
-        .spin-btn:disabled { background: #8B4513;color: #FFF8E7; box-shadow: 0 4px 0 #333; cursor: not-allowed; }
+        .spin-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #b36b00; }
+        .spin-btn:disabled { background: #666; box-shadow: 0 4px 0 #333; cursor: not-allowed; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;

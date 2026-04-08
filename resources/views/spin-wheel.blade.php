@@ -6,7 +6,7 @@
     <title>Lucky Splash Wheel</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="{{ asset('css/spin-wheel.css') }}" rel="stylesheet">
-    <link rel="shortcut icon" href="{{asset("images/a-favicon.ico")}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{asset("images/favicon.ico")}}" type="image/x-icon">
 
     <style>
     
@@ -19,7 +19,7 @@
             min-height: 100vh; /* better than height */
             margin: 0;
 
-            background-image: url("{{asset('images/laravel-logo.png')}}");
+            background-image: url("{{asset('images/background.jpg')}}");
             background-position: center center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -98,7 +98,7 @@
             font-size: 16px;
             font-weight: bold;
             color: #440000;
-            background: linear-gradient(#D4AF37, #ff9500);
+            background: linear-gradient(#ffea00, #ff9500);
             border: none;
             border-radius: 25px;
             cursor: pointer;
@@ -160,7 +160,7 @@
         <button id="inquiryBtn" class="inquiry-btn">📊 Inquiry</button>
     @endauth
 
-    <h1>  </h1>
+    <h1> Lucky Splash Wheel </h1>
 
     <div class="wheel-container">
         <div class="pointer"></div>
@@ -168,7 +168,7 @@
             <canvas id="wheelCanvas" width="400" height="400"></canvas>
             <div class="bulb-ring" id="bulbRing"></div>
             <div class="center-logo">
-                <img src="{{ asset('images/aahara-logo.jpg') }}" alt="Logo">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
             </div>
         </div>
     </div>
