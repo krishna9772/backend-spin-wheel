@@ -43,10 +43,13 @@ axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';    
 
 // --- REWARDS LOGIC ---
+let allRewards = [];
 let rewardsTable;
 
 async function fetchRewards() {
     const res = await axios.get(apiUrl);
+
+    allRewards = res.data;
 
     if (rewardsTable) {
         rewardsTable.destroy();
@@ -96,9 +99,24 @@ async function createReward() {
 }
 
 async function editReward(id) {
-    const label = prompt('New label:');
-    const chance = prompt('New chance:');
+    // 1. Find the old values from our stored data
+    const reward = allRewards.find(r => r.id === id);
+    if (!reward) return alert("Reward not found.");
+
+    // 2. Pass the old values as the second parameter to prompt()
+    const label = prompt('Edit label:', reward.label);
+    
+    // If user clicks Cancel, 'label' is null, so we stop.
+    if (label === null) return; 
+
+    const chance = prompt('Edit chance %:', reward.chance);
+    
+    // If user clicks Cancel, stop.
+    if (chance === null) return; 
+
+    // 3. Validate and Save
     if (!validateReward({ label, chance, stock: 0 })) return; 
+    
     await axios.put(`${apiUrl}/${id}`, { label, chance: parseFloat(chance) });
     fetchRewards();
 }

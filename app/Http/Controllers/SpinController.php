@@ -51,15 +51,16 @@ class SpinController extends Controller
             }
             $selected ??= $allRewards->first();
 
-            // 3. THE INDUSTRY STANDARD FALLBACK LOGIC
-            if ($selected->stock <= 0) {
+           if ($selected->stock <= 0) {
                 // The item they landed on is empty. 
-                // Give them the consolation prize instead.
-                // (Assuming you have a reward named "Consolation Prize" or similar)
-                $selected = Reward::where('label', 'Bad Luck')->first(); 
+                // Randomly pick one of the default consolations
+                $consolations = ['Happy Thingyan', 'Have a good day !'];
+                $randomConsolation = $consolations[array_rand($consolations)];
+                
+                $selected = Reward::where('label', $randomConsolation)->first(); 
                 
                 if (!$selected) {
-                    // Failsafe if you forgot to create a consolation prize
+                    // Failsafe if you forgot to create the consolation prizes in the DB
                     throw new \Exception("System out of fallback rewards.");
                 }
             } else {

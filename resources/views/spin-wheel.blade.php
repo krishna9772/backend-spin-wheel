@@ -30,6 +30,65 @@
             position: relative;
         }
 
+        /* --- Modal Themes --- */
+        /* Default / Bad Luck */
+        .theme-sad {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            border-top: 6px solid #B30C12; /* Red top border */
+        }
+
+        /* Have a Good Day */
+        .theme-good-day {
+            background-color: #fff9e6;
+            color: #d4af37; /* Gold text */
+            border-top: 6px solid #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Happy Thingyan */
+        .theme-thingyan {
+            background-color: #e0f7fa; /* Light cyan background */
+            color: #00838f; /* Deep water blue */
+            border-top: 6px solid #00bcd4;
+            position: relative;
+            overflow: hidden; /* Keeps water inside the box */
+        }
+
+        /* --- Water Drop Animation --- */
+        #waterAnimationContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 0;
+        }
+
+        .water-drop {
+            position: absolute;
+            bottom: 100%;
+            width: 8px;
+            height: 16px;
+            background: rgba(0, 188, 212, 0.6);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(300px); /* Adjust based on your modal height */
+                opacity: 0;
+            }
+        }
+
+        /* Ensure text stays above the water */
+        #badLuckTitle, #badLuckDesc, #closeBadLuckModalBtn {
+            position: relative;
+            z-index: 1;
+        }
+
         /* 1. Style the floating Inquiry Button */
         .inquiry-btn {
             position: absolute;
@@ -126,13 +185,14 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="badLuckModalOverlay">
-        <div class="modal" id="badLuckModalBox">
-            <h2 style="color: #888;">😔 ဝမ်းနည်းပါတယ် 😔</h2>
-            <p style="color: #555;">နောက်တစ်ကြိမ် ပြန်ကြိုးစားပါအုံးနော်!<br>
-               <span class="prize-text" style="color: #888; font-size: 16px; margin-top:10px;">( ကျေးဇူးတင်ပါသည် )</span>
-            </p>
-            <button class="close-btn" id="closeBadLuckModalBtn" style="background: #e0e0e0; color: #333; box-shadow: 0 4px 0 #999;"> Close </button>
+    <div id="badLuckModalOverlay" class="modal-overlay" style="display: none;">
+        <div id="badLuckModalBox" class="modal">
+            <div id="waterAnimationContainer"></div> 
+            
+            <h2 id="badLuckTitle">Oh no...</h2>
+            <p id="badLuckDesc" style="margin-top: 10px; font-size: 18px;">Try again next time.</p>
+            
+            <button id="closeBadLuckModalBtn" class="close-btn">Close</button>
         </div>
     </div>
 

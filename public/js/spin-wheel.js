@@ -269,6 +269,8 @@
         let isSpinning = false;
 
         function drawWheel() {
+			if (!sectors.length) return; // 🔥 IMPORTANT
+
 			const ctx = canvas.getContext("2d");
 			const radius = canvas.width / 2;
 			const arc = (2 * Math.PI) / sectors.length;
@@ -346,11 +348,11 @@
 
         spinBtn.addEventListener("click", async () => {
 			if (isSpinning) return;
+			
 			isSpinning = true;
 			spinBtn.disabled = true;
 			stopIdleAnimation();
-			clearInterval(idleInterval);
-
+			canvas.style.transition = "none"; // reset before spin
 			// Optional: fullscreen for better UX
 			enterFullscreen();
 
@@ -377,27 +379,51 @@
 				}
 				win.stock--; // Deduct stock locally
 
-				// 4️⃣ Compute rotation
+				// 4️⃣ Compute bulletproof rotation
 				const sectorDeg = 360 / sectors.length;
+				
+				// Target angle (270 is top center of canvas)
 				const targetDeg = 270 - (winnerIndex * sectorDeg) - (sectorDeg / 2);
+				
+				// Ensure current rotation modulo is positive
+				const currentMod = currentRotation % 360;
+				const targetMod = (targetDeg % 360 + 360) % 360; 
+				
+				// Calculate exact degrees needed to spin forward to the target
+				let degreesToSpin = targetMod - currentMod;
+				if (degreesToSpin < 0) {
+					degreesToSpin += 360; 
+				}
 				const extraSpins = 2160; // 6 full rotations
+
+				// normalize to prevent overflow
+				// currentRotation = finalRotation % 3600; // keep within safe range
 				currentRotation = (currentRotation - (currentRotation % 360)) + extraSpins + (targetDeg < 0 ? targetDeg + 360 : targetDeg);
+
+				console.log(currentRotation);
+
+				// currentRotation = 6480;
 
 				// 5️⃣ Animate the wheel
 				canvas.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.15, 1)";
-				canvas.style.transform = "rotate(" + currentRotation + "deg)";
+				canvas.style.transform = `rotate(${currentRotation}deg)`;
 
 				// 6️⃣ Show result after animation
-				setTimeout(async() => {
-					
-			
-					const isBadLuck = win.label.toLowerCase().includes('bad luck') || 
-                                      win.label.toLowerCase().includes('try again') ||
-                                      win.label === 'Thank You'; 
+				setTimeout(async () => {
+					try {
+						const label = win.label.toLowerCase().trim();
+
+						console.log(label);
+
+						const isBadLuck = label.includes('bad luck') || 
+										label.includes('try again') ||
+										label === 'thank you' ||
+										label === 'happy thingyan' || 
+										label === 'have a good day !' ||
+										label === 'have a good day!';
 
                     if (isBadLuck) {
-                        showBadLuckModal();
-                        // Notice: NO confetti here!
+						showBadLuckModal(win.label);
                     } else {
                         showModal(win.label);
                         shootConfetti();
@@ -405,12 +431,14 @@
                     
                     await fetchRewards();
 
-					// showModal(data.reward); // Display reward
-					// confetti({ particleCount: 200, spread: 360, origin: { y: 0.5 } }); // Smooth confetti
-					// fetchRewards(); // Optional: sync stock from server
-					// console.log("Fetch rewards");
-					// startIdleAnimation();
-					
+					} catch (e) {
+						console.error(e);
+					} finally {
+						// 🔥 GUARANTEE RESET
+						isSpinning = false;
+						spinBtn.disabled = false;
+					}
+
 				}, 5000);
 
 			} catch (err) {
@@ -428,20 +456,84 @@
             setTimeout(() => { modalBox.classList.add('active'); }, 10);
         }
 
-        function closeModal() {
-            modalBox.classList.remove('active');
-            setTimeout(() => {
-                modalOverlay.style.display = 'none';
-                isSpinning = false;
-                spinBtn.disabled = false;
-                startIdleAnimation(); // Modal ပိတ်ရင် Idle ပြန်စမယ်
-            }, 300);
-        }
+        // function closeModal() {
+        //     modalBox.classList.remove('active');
+        //     setTimeout(() => {
+        //         modalOverlay.style.display = 'none';
+        //         isSpinning = false;
+        //         spinBtn.disabled = false;
+        //         startIdleAnimation(); // Modal ပိတ်ရင် Idle ပြန်စမယ်
+        //     }, 300);
+        // }
 
-		function showBadLuckModal() {
-            badLuckModalOverlay.style.display = 'flex';
-            setTimeout(() => { badLuckModalBox.classList.add('active'); }, 10);
-        }
+		function showBadLuckModal(label) {
+			const normalizedLabel = label.toLowerCase().trim();
+			const modalBox = document.getElementById("badLuckModalBox");
+			const titleEl = document.getElementById("badLuckTitle");
+			const descEl = document.getElementById("badLuckDesc");
+			const waterContainer = document.getElementById("waterAnimationContainer");
+
+			// 1. Reset everything first
+			modalBox.classList.remove('theme-sad', 'theme-thingyan', 'theme-good-day');
+			waterContainer.innerHTML = ''; // Clear old water drops
+
+			// 2. Apply Theme based on the exact consolation prize
+			if (normalizedLabel === 'happy thingyan') {
+				modalBox.classList.add('theme-thingyan');
+				titleEl.innerText = "💦 ပျော်ရွှင်ဖွယ် သင်္ကြန်ဖြစ်ပါစေ။ 💦"; // Happy Thingyan!
+				descEl.innerText = "နှစ်သစ်မှာ အေးမြချမ်းသာပါစေ။"; // May your new year be cool and blessed!
+				createWaterSplashes(); // Trigger the animation
+
+			} else if (normalizedLabel.includes('good day')) {
+				modalBox.classList.add('theme-good-day');
+				titleEl.innerText = "☀️ ပျော်ရွှင်ဖွယ်နေ့လေးဖြစ်ပါစေ။ ☀️"; // Have a Good Day!
+				descEl.innerText = "ဒီတစ်ခါတော့သကြားလုံးမရသေးဘူး၊ ဒါပေမဲ့ ပြုံးထားပါ!"; // No sweets this time, but keep smiling!
+
+			} else {
+				// Standard Bad Luck / Try Again
+				modalBox.classList.add('theme-sad');
+				titleEl.innerText = "အို...!"; // Oops!
+				
+				// Note: If 'label' comes from the database as "Bad Luck" or "Try Again" in English, 
+				// you might want to translate it here instead of just printing the variable.
+				if (normalizedLabel.includes('bad luck') || normalizedLabel.includes('try again')) {
+					descEl.innerText = "နောက်မှထပ်ကြိုးစားကြည့်ပါ။"; // Try again next time.
+				} else {
+					descEl.innerText = label; 
+				}
+			}
+
+			// 3. Show the modal
+			badLuckModalOverlay.style.display = 'flex';
+			setTimeout(() => { modalBox.classList.add('active'); }, 10);
+		}
+			// Function to generate the falling water effect
+			function createWaterSplashes() {
+			const container = document.getElementById("waterAnimationContainer");
+
+			// Create 30 water drops with random positions and delays
+			for (let i = 0; i < 30; i++) {
+				setTimeout(() => {
+					const drop = document.createElement("div");
+					drop.classList.add("water-drop");
+					
+					// Random horizontal position (0% to 100%)
+					drop.style.left = Math.random() * 100 + "%";
+					
+					// Random falling speed (0.5s to 1.5s)
+					const duration = Math.random() * 1 + 0.5;
+					drop.style.animationDuration = duration + "s";
+					
+					container.appendChild(drop);
+					
+					// Cleanup drop after it falls
+					setTimeout(() => {
+						drop.remove();
+					}, duration * 1000);
+
+				}, Math.random() * 2000); // Stagger the start times over 2 seconds
+			}
+			}
 
         // Updated to close BOTH types of modals safely
         function closeModal() {
@@ -502,9 +594,9 @@
 			});
 		}
 
-		closeModalBtn.addEventListener("click", async () => {
-			closeModal();
-		});
+		// closeModalBtn.addEventListener("click", async () => {
+		// 	closeModal();
+		// });
 
 		// --- Panel Toggle Logic ---
 		document.addEventListener("DOMContentLoaded", () => {

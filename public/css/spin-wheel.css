@@ -78,7 +78,7 @@
             transform: scale(0.7); opacity: 0; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .modal.active { transform: scale(1); opacity: 1; }
-        .modal h2 { color: #d44737; margin-top: 0; font-size: 24px; }
+        .modal h2 { color: #d44737; margin-top: 0; font-size: 21px; }
         .modal p { font-size: 18px; margin: 15px 0; font-weight: bold; }
         .modal .prize-text { color: #b36b00; font-size: 20px; display: block; margin-top: 5px; }
         .close-btn {
