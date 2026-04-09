@@ -131,6 +131,26 @@
             opacity: 1;
         }
 
+        .control-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #440000;
+            background: linear-gradient(#ffea00, #ff9500);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #b36b00;
+            z-index: 1000;
+            transition: 0.2s;
+            font-family: 'Pyidaungsu', sans-serif;
+        }
+
+        .control-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #b36b00;
+        }
+
         /* Mobile tweak to ensure it fits on small screens */
         /* Mobile tweak to ensure it fits on small screens */
         @media (max-width: 600px) {
@@ -155,10 +175,14 @@
         }
     </style>
 </head>
-<body>
+<body> 
     @auth
         <button id="inquiryBtn" class="inquiry-btn">📊 Inquiry</button>
     @endauth
+    <div style="position:absolute; top:20px; left:20px; z-index:1000;">
+        <button id="fullscreenBtn" class="control-btn" title="Enter Fullscreen">⛶</button>
+    </div>
+
 
     <h1> Lucky Splash Wheel </h1>
 

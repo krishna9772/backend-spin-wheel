@@ -2,6 +2,7 @@
         const canvas = document.getElementById("wheelCanvas");
         const ctx = canvas.getContext("2d");
         const spinBtn = document.getElementById("spinBtn");
+		const fullscreenBtn = document.getElementById("fullscreenBtn");
         const modalOverlay = document.getElementById("modalOverlay");
         const modalBox = document.getElementById("modalBox");
         const prizeDisplay = document.getElementById("prizeDisplay");
@@ -234,6 +235,28 @@
 		}
 	}
 
+	function toggleFullscreen() {
+		if (!document.fullscreenElement) {
+			enterFullscreen();
+		} else {
+			document.exitFullscreen();
+		}
+	}
+
+	// Button click
+	if (fullscreenBtn) {
+		fullscreenBtn.addEventListener("click", toggleFullscreen);
+	}
+
+	// Change icon based on state
+	document.addEventListener("fullscreenchange", () => {
+		if (!document.fullscreenElement) {
+			fullscreenBtn.innerText = "⛶";
+		} else {
+			fullscreenBtn.innerText = "x";
+		}
+	});
+
 	function animateBulbs() {
 		const bulbs = document.querySelectorAll(".bulb");
 
@@ -354,7 +377,7 @@
 			stopIdleAnimation();
 			canvas.style.transition = "none"; // reset before spin
 			// Optional: fullscreen for better UX
-			enterFullscreen();
+			// enterFullscreen();
 
 			try {
 				// 1️⃣ Request server for winner
@@ -594,9 +617,6 @@
 			});
 		}
 
-		// closeModalBtn.addEventListener("click", async () => {
-		// 	closeModal();
-		// });
 
 		// --- Panel Toggle Logic ---
 		document.addEventListener("DOMContentLoaded", () => {
